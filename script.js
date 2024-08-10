@@ -1,4 +1,5 @@
 const addPlayerMoveBtn = document.querySelector(".addPlayerMove");
+const removePlayerMoveBtn = document.querySelector(".removePlayerMove");
 const list = document.querySelector(".list");
 
 const whiteMove = document.querySelector(".white");
@@ -20,6 +21,33 @@ addPlayerMoveBtn.addEventListener("click", () => {
   whiteMove.focus();
 });
 
-//TODO add gameRecord to localStorage so data persist.
-//TODO export copies the game records as a string to paste in chess.com
-//TODO wire up newGame button to clear the gameRecord and inputs.
+removePlayerMoveBtn.addEventListener("click", deleteMove);
+
+function deleteMove() {
+  let lastMove = list.lastElementChild;
+  list.removeChild(lastMove);
+  gameRecord.pop();
+}
+
+function clearMoves() {
+  list.innerHTML = "";
+  gameRecord.length = 0;
+}
+
+function saveGame() {
+  localStorage.setItem("gameRecord", JSON.stringify(gameRecord));
+}
+
+function loadGame() {
+  let savedGame = JSON.parse(localStorage.getItem("gameRecord"));
+  savedGame.forEach((move) => {
+    let newMove = document.createElement("li");
+    newMove.innerText = move;
+    list.appendChild(newMove);
+  });
+}
+
+function copyToClipboard() {
+  let text = gameRecord.join("\n");
+  navigator.clipboard.writeText(text);
+}
